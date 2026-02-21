@@ -83,7 +83,7 @@
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 400; /* Modifié de 200 à 400 pour rester au-dessus du menu plein écran (z-index 300) */
+      z-index: 400; /* au-dessus du menu plein écran (z-index 300) */
       background: rgba(250, 246, 239, 0.95);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -453,9 +453,6 @@
       white-space: nowrap;
     }
 
-    /* ─── HERO IMAGE COMPOSITION ─── */
-    /* styles définis plus bas dans la section .hero-visual artistique */
-
     /* ─── HERO VISUAL ARTISTIQUE ─── */
     .hero-visual {
       position: relative;
@@ -683,19 +680,22 @@
       position: absolute;
       inset: 0;
       transition: transform 0.6s;
+      background-size: cover;
+      background-position: center;
     }
 
     .collection-item:hover .item-bg,
     .collection-item:focus .item-bg { transform: scale(1.05); }
 
-    .item-bg-1 { background: linear-gradient(160deg, #2c1f6e, #7b5ea7, #1a8c8c); }
-    .item-bg-2 { background: linear-gradient(160deg, #6e1f2c, #c45c2a, #e8a320); }
-    .item-bg-3 { background: linear-gradient(160deg, #1f6e4a, #2ec4a0, #e8c4a0); }
+    /* Images réelles de batik pour la collection */
+    .item-bg-1 { background-image: url('laminecrea.jpeg'); }
+    .item-bg-2 { background-image: url('laminecrea2.jpeg'); }
+    .item-bg-3 { background-image: url('laminecrea3.jpeg'); }
 
     .item-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0.2);
     }
 
     .item-tag {
@@ -709,6 +709,7 @@
       padding: 0.3rem 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      z-index: 2;
     }
 
     .item-info {
@@ -720,6 +721,7 @@
       background: linear-gradient(transparent, rgba(0,0,0,0.8));
       color: white;
       transition: transform 0.4s;
+      z-index: 2;
     }
 
     .item-name {
@@ -728,7 +730,7 @@
       font-size: 1.1rem;
     }
 
-    /* ─── ABOUT ─── */
+    /* ─── ABOUT — avec images à la place des cercles de palette ─── */
     .about-section { padding: 4rem 0; }
 
     .about-inner {
@@ -746,27 +748,38 @@
       height: 380px;
     }
 
-    .palette-circle {
+    /* Remplacement des cercles de palette par des images circulaires */
+    .about-image {
       position: absolute;
       border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.15);
       animation: float 6s ease-in-out infinite;
+      border: 3px solid rgba(255,255,255,0.5);
     }
 
-    .pc-1 {
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .about-image-1 {
       width: 220px;
       height: 220px;
-      background: conic-gradient(from 0deg, #2c1f6e, #7b5ea7, #1a8c8c, #e8a320, #c45c2a, #2c1f6e);
       top: 15%;
       left: 5%;
+      z-index: 2;
     }
 
-    .pc-2 {
+    .about-image-2 {
       width: 140px;
       height: 140px;
-      background: conic-gradient(from 90deg, #e8a320, #c45c2a, #2c1f6e, #e8a320);
       bottom: 15%;
       right: 10%;
       animation-delay: -3s;
+      z-index: 3;
     }
 
     @keyframes float {
@@ -1013,7 +1026,6 @@
     @media (max-width: 768px) {
       .hamburger { display: flex; }
 
-      /* Cache les liens desktop */
       .nav-links {
         display: none;
       }
@@ -1046,17 +1058,7 @@
         padding: 1rem 1.5rem;
       }
 
-      .hero-grid {
-        margin: 0 auto;
-        width: 100%;
-        max-width: 360px;
-        gap: 0.6rem;
-      }
-
-      .hero-swatch span { font-size: 0.55rem; }
-
       section { padding: 3rem 0; }
-
 
       .process-grid {
         grid-template-columns: 1fr;
@@ -1094,8 +1096,8 @@
         order: -1;
       }
 
-      .pc-1 { width: 160px; height: 160px; top: 10%; left: 5%; }
-      .pc-2 { width: 100px; height: 100px; bottom: 5%; right: 5%; }
+      .about-image-1 { width: 160px; height: 160px; top: 10%; left: 5%; }
+      .about-image-2 { width: 100px; height: 100px; bottom: 5%; right: 5%; }
 
       .commandes { padding: 3.5rem 1.2rem; }
       .commandes > p { font-size: 0.95rem; }
@@ -1125,7 +1127,6 @@
         padding: 1.5rem 1rem;
       }
 
-      /* Menu plein écran — taille de police adaptée mobile */
       .menu-nav a {
         font-size: clamp(2rem, 11vw, 3rem);
         padding: 0.3em 0;
@@ -1145,7 +1146,6 @@
     @media (max-width: 380px) {
       .nav-logo { font-size: 0.9rem; }
       .hero-title { font-size: 2.1rem; }
-      .hero-grid { max-width: 280px; }
       .section-title { font-size: 1.7rem; }
       .hero-cta { gap: 0.7rem; }
       .btn-primary { padding: 0.9rem 1.2rem; font-size: 0.62rem; }
@@ -1169,9 +1169,7 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     MENU PLEIN ÉCRAN
-══════════════════════════════════════════ -->
+<!-- MENU PLEIN ÉCRAN -->
 <div class="fullscreen-menu" id="fullscreenMenu" role="dialog" aria-modal="true" aria-label="Menu principal" aria-hidden="true">
   <div class="menu-backdrop"></div>
   <div class="menu-ornament"></div>
@@ -1199,7 +1197,7 @@
   <div class="nav-inner">
     <div class="nav-logo">Atelier Casamance</div>
 
-    <!-- Hamburger visible uniquement mobile -->
+    <!-- Hamburger -->
     <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="fullscreenMenu">
       <div class="hamburger-lines">
         <span></span>
@@ -1220,7 +1218,7 @@
 </nav>
 
 <main>
-  <!-- ─── HERO ─── -->
+  <!-- HERO -->
   <section class="hero-section">
     <div class="hero-inner">
       <div>
@@ -1233,64 +1231,37 @@
         </div>
       </div>
      
-       <!-- IMAGE HERO ARTISTIQUE -->
+      <!-- HERO VISUAL -->
       <div class="hero-visual" aria-label="Composition visuelle de l'atelier">
-
-        <!-- Cadre principal — grande image verticale -->
         <div class="hv-main">
-          <img
-            src="https://images.unsplash.com/photo-1590736704728-f4730bb30770?w=800&auto=format&fit=crop&q=85"
-            alt="Tissus batik colorés — Atelier Casamance"
-            class="hv-img"
-            id="heroMainImg"
-          >
-          <!-- Voile couleur en overlay pour homogénéiser le ton -->
+          <img src="laminecrea4.jpeg" alt="Tissus batik colorés — Atelier Casamance" class="hv-img" id="heroMainImg">
           <div class="hv-main-overlay"></div>
-          <!-- Badge flottant -->
           <div class="hv-badge">
-            <span class="hv-badge-num">12 ans</span>
+            <span class="hv-badge-num">.  7 ans</span>
             <span class="hv-badge-label">de création</span>
           </div>
         </div>
-
-        <!-- Colonne droite : 2 vignettes empilées -->
         <div class="hv-col">
           <div class="hv-thumb hv-thumb-top">
-            <img
-              src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=400&auto=format&fit=crop&q=80"
-              alt="Mangrove de Casamance"
-              class="hv-img"
-              id="heroThumb1"
-            >
+            <img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=400&auto=format&fit=crop&q=80" alt="Mangrove de Casamance" class="hv-img" id="heroThumb1">
             <div class="hv-thumb-overlay"></div>
           </div>
           <div class="hv-thumb hv-thumb-bot">
-            <img
-              src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400&auto=format&fit=crop&q=80"
-              alt="Coucher de soleil sur la plage de Cap-Skirring"
-              class="hv-img"
-              id="heroThumb2"
-            >
+            <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400&auto=format&fit=crop&q=80" alt="Coucher de soleil sur la plage de Cap-Skirring" class="hv-img" id="heroThumb2">
             <div class="hv-thumb-overlay"></div>
-            <!-- Étiquette lieu -->
             <div class="hv-location">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
               Cap Skirring · Casamance
             </div>
           </div>
         </div>
-
-        <!-- Trait décoratif diagonal -->
         <div class="hv-deco-line"></div>
-
-        <!-- Cercle pigment flottant -->
         <div class="hv-pigment" aria-hidden="true"></div>
-
       </div>
     </div>
   </section>
 
-  <!-- ─── PROCESS ─── -->
+  <!-- PROCESS -->
   <section id="processus" class="process">
     <div class="container">
       <div class="reveal">
@@ -1323,7 +1294,7 @@
     </div>
   </section>
 
-  <!-- ─── COLLECTION ─── -->
+  <!-- COLLECTION -->
   <section id="collection">
     <div class="container">
       <div class="reveal" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 0.5rem;">
@@ -1365,12 +1336,17 @@
     </div>
   </section>
 
-  <!-- ─── ABOUT ─── -->
+  <!-- ABOUT (avec images réelles) -->
   <section id="artiste" class="about-section">
     <div class="about-inner">
       <div class="about-visual">
-        <div class="palette-circle pc-1"></div>
-        <div class="palette-circle pc-2"></div>
+        <!-- Remplacement des cercles de palette par des images circulaires -->
+        <div class="about-image about-image-1">
+          <img src="laminecrea4.jpeg" alt="Batik aux couleurs vives">
+        </div>
+        <div class="about-image about-image-2">
+          <img src="laminecrea1.jpeg" alt="Motifs traditionnels de tissage">
+        </div>
       </div>
       <div class="reveal">
         <p class="section-tag">L'Atelier</p>
@@ -1384,7 +1360,7 @@
     </div>
   </section>
 
-  <!-- ─── COMMANDES ─── -->
+  <!-- COMMANDES -->
   <section id="commande" class="commandes">
     <p class="section-tag">Sur Mesure</p>
     <h2 class="section-title">Votre vision,<br>nos couleurs</h2>
@@ -1401,7 +1377,7 @@
     <a href="#contact" class="btn-white">Demander un Devis</a>
   </section>
 
-  <!-- ─── CONTACT ─── -->
+  <!-- CONTACT -->
   <section id="contact" class="contact-section">
     <div class="contact-info">
       <p class="section-tag">Me Contacter</p>
@@ -1473,14 +1449,10 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-
-    // ══════════════════════════════════════════
     // MENU PLEIN ÉCRAN
-    // ══════════════════════════════════════════
     const hamburger    = document.getElementById('hamburger');
     const fullscreen   = document.getElementById('fullscreenMenu');
     const menuLinks    = document.querySelectorAll('.menu-link');
-    const navLogo      = document.querySelector('.nav-logo');
 
     if (!hamburger || !fullscreen) return;
 
@@ -1494,7 +1466,6 @@
       hamburger.setAttribute('aria-expanded', 'true');
       hamburger.setAttribute('aria-label', 'Fermer le menu');
       document.body.style.overflow = 'hidden';
-      // Focus first link for accessibility
       setTimeout(() => {
         const firstLink = fullscreen.querySelector('.menu-link');
         if (firstLink) firstLink.focus();
@@ -1517,13 +1488,11 @@
       isOpen ? closeMenu() : openMenu();
     });
 
-    // Fermeture par clic sur les liens
     menuLinks.forEach(function (link) {
       link.addEventListener('click', function (e) {
         e.preventDefault();
         const href = this.getAttribute('href');
         closeMenu();
-        // Scroll après fermeture (attendre fin animation)
         setTimeout(function () {
           const target = document.querySelector(href);
           if (target) {
@@ -1535,21 +1504,17 @@
       });
     });
 
-    // Fermeture touche Escape
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && isOpen) closeMenu();
     });
 
-    // Fermeture clic arrière-plan (backdrop lui-même)
     fullscreen.addEventListener('click', function (e) {
       if (e.target === fullscreen || e.target.classList.contains('menu-backdrop')) {
         closeMenu();
       }
     });
 
-    // ══════════════════════════════════════════
     // SCROLL REVEAL
-    // ══════════════════════════════════════════
     const observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) entry.target.classList.add('visible');
@@ -1560,14 +1525,11 @@
       observer.observe(el);
     });
 
-    // ══════════════════════════════════════════
-    // SMOOTH SCROLL — liens desktop & hero
-    // ══════════════════════════════════════════
+    // SMOOTH SCROLL
     document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
       anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
         if (href === '#') return;
-        // Les liens du menu sont déjà gérés ci-dessus
         if (this.classList.contains('menu-link')) return;
         e.preventDefault();
         const target = document.querySelector(href);
@@ -1579,9 +1541,7 @@
       });
     });
 
-    // ══════════════════════════════════════════
     // FORMULAIRE
-    // ══════════════════════════════════════════
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
       contactForm.addEventListener('submit', function (e) {
