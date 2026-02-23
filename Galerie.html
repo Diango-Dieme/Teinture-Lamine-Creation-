@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Galerie · Collection complète · Atelier de Casamance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@200;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --indigo: #2c1f6e;
+      --deep: #1a0f3c;
+      --teal: #1a8c8c;
+      --saffron: #e8a320;
+      --rust: #c45c2a;
+      --cream: #faf6ef;
+      --ink: #1a1208;
+      --beige: #f5f0e8;
+      --font-serif: 'Playfair Display', serif;
+      --font-sans: 'Josefin Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--font-serif);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    section { padding: 4rem 0; }
+
+    /* TYPOGRAPHIE */
+    .section-tag {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 6vw, 3.5rem);
+      line-height: 1.1;
+      color: var(--indigo);
+      margin-bottom: 1.2rem;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--rust);
+    }
+
+    /* NAVIGATION (identique à l'index) */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 400;
+      background: rgba(250, 246, 239, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 1.2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--indigo);
+      white-space: nowrap;
+      z-index: 400;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--indigo);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      z-index: 400;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .hamburger-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 26px;
+    }
+
+    .hamburger-lines span {
+      display: block;
+      height: 1.5px;
+      background: var(--indigo);
+      border-radius: 1px;
+      transition: transform 0.5s cubic-bezier(0.23,1,0.32,1),
+                  opacity 0.3s ease,
+                  width 0.4s cubic-bezier(0.23,1,0.32,1);
+    }
+    .hamburger-lines span:nth-child(1) { width: 26px; }
+    .hamburger-lines span:nth-child(2) { width: 18px; margin-left: auto; }
+    .hamburger-lines span:nth-child(3) { width: 26px; }
+
+    .hamburger.open .hamburger-lines span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+      width: 26px;
+    }
+    .hamburger.open .hamburger-lines span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .hamburger.open .hamburger-lines span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+      width: 26px;
+    }
+
+    /* Menu plein écran */
+    .fullscreen-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .menu-backdrop {
+      position: absolute;
+      inset: 0;
+      background: var(--deep);
+      clip-path: circle(0% at calc(100% - 2rem) 2.5rem);
+      transition: clip-path 0.75s cubic-bezier(0.77,0,0.175,1);
+    }
+    .menu-backdrop::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 80%, rgba(232,163,32,0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 20%, rgba(26,140,140,0.08) 0%, transparent 50%);
+    }
+    .fullscreen-menu.open { pointer-events: all; }
+    .fullscreen-menu.open .menu-backdrop { clip-path: circle(150% at calc(100% - 2rem) 2.5rem); }
+
+    .menu-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 2rem 3rem;
+    }
+    .menu-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 0.58rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.4s 0.1s, transform 0.5s 0.1s cubic-bezier(0.23,1,0.32,1);
+    }
+    .fullscreen-menu.open .menu-eyebrow { opacity: 1; transform: translateX(0); }
+
+    .menu-nav {
+      list-style: none;
+    }
+    .menu-nav li {
+      overflow: hidden;
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+    .menu-nav a {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 8vw, 4rem);
+      font-style: italic;
+      color: white;
+      text-decoration: none;
+      padding: 0.35em 0;
+      transform: translateY(110%);
+      transition: transform 0.7s cubic-bezier(0.23,1,0.32,1), color 0.3s;
+      position: relative;
+    }
+    .menu-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0.2em;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--saffron);
+      transition: width 0.4s cubic-bezier(0.23,1,0.32,1);
+    }
+    .menu-nav a:hover { color: var(--saffron); }
+    .menu-nav a:hover::after { width: 100%; }
+
+    .fullscreen-menu.open .menu-nav li:nth-child(1) a { transform: translateY(0); transition-delay: 0.12s; }
+    .fullscreen-menu.open .menu-nav li:nth-child(2) a { transform: translateY(0); transition-delay: 0.18s; }
+    .fullscreen-menu.open .menu-nav li:nth-child(3) a { transform: translateY(0); transition-delay: 0.24s; }
+    .fullscreen-menu.open .menu-nav li:nth-child(4) a { transform: translateY(0); transition-delay: 0.30s; }
+    .fullscreen-menu.open .menu-nav li:nth-child(5) a { transform: translateY(0); transition-delay: 0.36s; }
+
+    .menu-nav a .menu-num {
+      font-family: var(--font-sans);
+      font-size: 0.55rem;
+      font-style: normal;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.3);
+      vertical-align: super;
+      margin-right: 0.6em;
+    }
+    .menu-footer {
+      margin-top: auto;
+      padding-top: 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.5s 0.5s, transform 0.5s 0.5s cubic-bezier(0.23,1,0.32,1);
+    }
+    .fullscreen-menu.open .menu-footer { opacity: 1; transform: translateY(0); }
+    .menu-footer-contact {
+      font-family: var(--font-sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.8;
+    }
+    .menu-footer-contact a { color: rgba(255,255,255,0.65); text-decoration: none; }
+    .menu-footer-contact a:hover { color: var(--saffron); }
+    .menu-footer-logo {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.15);
+    }
+    .menu-ornament {
+      position: absolute;
+      bottom: -20%;
+      right: -10%;
+      width: 55vw;
+      height: 55vw;
+      max-width: 500px;
+      max-height: 500px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(44,31,110,0.6), rgba(26,140,140,0.2), rgba(232,163,32,0.15), rgba(196,92,42,0.2), rgba(44,31,110,0.6));
+      opacity: 0;
+      transform: scale(0.7) rotate(-20deg);
+      transition: opacity 0.8s 0.3s, transform 0.9s 0.3s cubic-bezier(0.23,1,0.32,1);
+      pointer-events: none;
+    }
+    .fullscreen-menu.open .menu-ornament { opacity: 1; transform: scale(1) rotate(0deg); }
+
+    /* GALLERIE HERO */
+    .gallery-hero {
+      padding-top: 7rem;
+      text-align: center;
+      background: var(--cream);
+    }
+    .gallery-description {
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1rem;
+      color: #4a3f32;
+      font-style: italic;
+    }
+
+    /* GRILLE DE LA COLLECTION COMPLÈTE */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin-top: 2.5rem;
+    }
+
+    .gallery-item {
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+      cursor: pointer;
+      background-color: #e8ddd0; /* fallback */
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: box-shadow 0.3s ease;
+    }
+    .gallery-item:hover {
+      box-shadow: 0 14px 28px rgba(44,31,110,0.2);
+    }
+
+    .gallery-item-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
+    }
+    .gallery-item:hover .gallery-item-bg {
+      transform: scale(1.05);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.4) 100%);
+      z-index: 1;
+    }
+
+    .gallery-tag {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(26,15,60,0.7);
+      color: white;
+      font-family: var(--font-sans);
+      font-size: 0.6rem;
+      padding: 0.3rem 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      z-index: 2;
+      backdrop-filter: blur(2px);
+      border-radius: 20px;
+    }
+
+    .gallery-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem 1rem 1rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      color: white;
+      z-index: 2;
+    }
+
+    .gallery-name {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .gallery-details {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* images de la collection (à partir des fichiers existants) */
+    .gallery-bg-1 { background-image: url('laminecrea.jpeg'); }
+    .gallery-bg-2 { background-image: url('laminecrea2.jpeg'); }
+    .gallery-bg-3 { background-image: url('laminecrea3.jpeg'); }
+    .gallery-bg-4 { background-image: url('lamine3.jpeg'); }
+    .gallery-bg-5 { background-image: url('lamine - Copie.jpeg'); }
+    .gallery-bg-6 { background-image: url('atelier.jpeg'); }
+    .gallery-bg-7 { background-image: url('lamine1A.jpeg'); }
+    .gallery-bg-8 { background-image: url('laminecrea1.jpeg'); }
+    .gallery-bg-9 { background-image: url('laminecrea.jpeg'); } /* on recycle avec un autre titre */
+    .gallery-bg-10 { background-image: url('laminecrea2.jpeg'); }
+    .gallery-bg-11 { background-image: url('laminecrea3.jpeg'); }
+    .gallery-bg-12 { background-image: url('lamine3.jpeg'); }
+
+    /* FOOTER (identique) */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.4);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    footer span { color: var(--saffron); }
+
+    /* REVEAL (optionnel) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      .nav-links { display: none; }
+      section { padding: 3rem 0; }
+      .gallery-hero { padding-top: 6rem; }
+      .gallery-grid { gap: 1.2rem; }
+      .menu-nav a { font-size: clamp(2rem, 11vw, 3rem); }
+      .menu-content { padding: 5rem 1.5rem 2rem; }
+      .menu-footer { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 380px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+    @media (hover: none) and (pointer: coarse) {
+      .gallery-item { min-height: 320px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- MENU PLEIN ÉCRAN (liens mis à jour pour pointer vers index.html) -->
+<div class="fullscreen-menu" id="fullscreenMenu" role="dialog" aria-modal="true" aria-label="Menu principal" aria-hidden="true">
+  <div class="menu-backdrop"></div>
+  <div class="menu-ornament"></div>
+  <div class="menu-content">
+    <p class="menu-eyebrow">Atelier de Casamance · Navigation</p>
+    <ul class="menu-nav">
+      <li><a href="galerie.html" class="menu-link"><span class="menu-num">01</span>Collection</a></li>
+      <li><a href="index.html#processus" class="menu-link"><span class="menu-num">02</span>Savoir-faire</a></li>
+      <li><a href="index.html#artiste" class="menu-link"><span class="menu-num">03</span>L'Atelier</a></li>
+      <li><a href="index.html#commande" class="menu-link"><span class="menu-num">04</span>Commande</a></li>
+      <li><a href="index.html#contact" class="menu-link"><span class="menu-num">05</span>Contact</a></li>
+    </ul>
+    <div class="menu-footer">
+      <div class="menu-footer-contact">
+        <div><a href="mailto:buhanorcampement@gmail.com">buhanorcampement@gmail.com</a></div>
+        <div><a href="tel:+221775423897">+221 77 542 38 97</a></div>
+        <div style="margin-top:0.3rem; color: rgba(255,255,255,0.25);">Cap-Skirring · Casamance · Sénégal</div>
+      </div>
+      <div class="menu-footer-logo">Atelier Casamance</div>
+    </div>
+  </div>
+</div>
+
+<nav aria-label="Navigation principale">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Atelier Casamance</a>
+    <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="fullscreenMenu">
+      <div class="hamburger-lines"><span></span><span></span><span></span></div>
+    </button>
+    <ul class="nav-links">
+      <li><a href="galerie.html">Collection</a></li>
+      <li><a href="index.html#processus">Savoir-faire</a></li>
+      <li><a href="index.html#artiste">L'Atelier</a></li>
+      <li><a href="index.html#commande">Commande</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <!-- HERO GALERIE -->
+  <section class="gallery-hero">
+    <div class="container">
+      <p class="section-tag">Galerie complète</p>
+      <h1 class="section-title">Toute la <em>collection</em></h1>
+      <p class="gallery-description">Batiks, Thioups, tentures et foulards — chaque pièce est unique, façonnée à la main dans notre atelier du Cap Skirring.</p>
+    </div>
+  </section>
+
+  <!-- GRILLE D'IMAGES (12 œuvres) -->
+  <section>
+    <div class="container">
+      <div class="gallery-grid reveal">
+        <!-- 1 -->
+        <div class="gallery-item" tabindex="0" aria-label="Batik : Scène de pêche">
+          <div class="gallery-item-bg gallery-bg-1"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Batik</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Scène de pêche</div>
+            <div class="gallery-details">120×180 cm · coton</div>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div class="gallery-item" tabindex="0" aria-label="Thioup : Spirale indigo">
+          <div class="gallery-item-bg gallery-bg-2"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Thioup</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Spirale indigo</div>
+            <div class="gallery-details">tie-dye · 90×90 cm</div>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="gallery-item" tabindex="0" aria-label="Tenture : Palétuviers">
+          <div class="gallery-item-bg gallery-bg-3"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Tenture</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Palétuviers</div>
+            <div class="gallery-details">Batik · 150×200 cm</div>
+          </div>
+        </div>
+        <!-- 4 -->
+        <div class="gallery-item" tabindex="0" aria-label="Foulard : Coucher de soleil">
+          <div class="gallery-item-bg gallery-bg-4"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Foulard</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Coucher de soleil</div>
+            <div class="gallery-details">Thioup · 70×70 cm</div>
+          </div>
+        </div>
+        <!-- 5 -->
+        <div class="gallery-item" tabindex="0" aria-label="Batik : Mangrove">
+          <div class="gallery-item-bg gallery-bg-5"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Batik</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Mangrove</div>
+            <div class="gallery-details">ocre et indigo · 100×150</div>
+          </div>
+        </div>
+        <!-- 6 -->
+        <div class="gallery-item" tabindex="0" aria-label="Tenture : L'Atelier">
+          <div class="gallery-item-bg gallery-bg-6"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Tenture</div>
+          <div class="gallery-info">
+            <div class="gallery-name">L'Atelier</div>
+            <div class="gallery-details">technique mixte · 130×170</div>
+          </div>
+        </div>
+        <!-- 7 -->
+        <div class="gallery-item" tabindex="0" aria-label="Batik : Danse des masques">
+          <div class="gallery-item-bg gallery-bg-7"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Batik</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Danse des masques</div>
+            <div class="gallery-details">édition limitée</div>
+          </div>
+        </div>
+        <!-- 8 -->
+        <div class="gallery-item" tabindex="0" aria-label="Thioup : Vagues">
+          <div class="gallery-item-bg gallery-bg-8"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Thioup</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Vagues océanes</div>
+            <div class="gallery-details">drap 240×260 cm</div>
+          </div>
+        </div>
+        <!-- 9 -->
+        <div class="gallery-item" tabindex="0" aria-label="Foulard : Baobab">
+          <div class="gallery-item-bg gallery-bg-9"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Foulard</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Baobab sacré</div>
+            <div class="gallery-details">Batik · 90×90 cm</div>
+          </div>
+        </div>
+        <!-- 10 -->
+        <div class="gallery-item" tabindex="0" aria-label="Coussin : tissage">
+          <div class="gallery-item-bg gallery-bg-10"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Coussin</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Écorce & terre</div>
+            <div class="gallery-details">45×45 cm · thioup</div>
+          </div>
+        </div>
+        <!-- 11 -->
+        <div class="gallery-item" tabindex="0" aria-label="Nappe : Caravane">
+          <div class="gallery-item-bg gallery-bg-11"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Nappe</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Caravane</div>
+            <div class="gallery-details">180×300 cm · batik</div>
+          </div>
+        </div>
+        <!-- 12 -->
+        <div class="gallery-item" tabindex="0" aria-label="Pareo : Cap Skirring">
+          <div class="gallery-item-bg gallery-bg-12"></div>
+          <div class="gallery-overlay"></div>
+          <div class="gallery-tag">Pareo</div>
+          <div class="gallery-info">
+            <div class="gallery-name">Cap Skirring</div>
+            <div class="gallery-details">100×200 cm · coton</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPEL À COMMANDE (optionnel, pour faire le lien) -->
+  <section class="commandes" style="background: var(--indigo); color: white; margin-top: 2rem;">
+    <div class="container" style="text-align: center;">
+      <p class="section-tag" style="color: var(--saffron);">Sur mesure</p>
+      <h2 class="section-title" style="color: white;">Une pièce <em>personnalisée</em> ?</h2>
+      <p style="max-width: 550px; margin: 0 auto 2rem; opacity: 0.9;">Choisissez vos couleurs, dimensions et technique. Notre atelier réalise votre projet unique.</p>
+      <a href="index.html#commande" class="btn-white" style="background: white; color: var(--indigo); padding: 1rem 2.8rem; text-decoration: none; font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;">Demander un devis</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div>© 2026 Atelier Casamance & Campement Buhanor</div>
+  <div>Artisanat Sénégalais · <span>Fait avec passion</span></div>
+  <div>Cap-Skirring, Casamance</div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const hamburger    = document.getElementById('hamburger');
+    const fullscreen   = document.getElementById('fullscreenMenu');
+    const menuLinks    = document.querySelectorAll('.menu-link');
+
+    if (!hamburger || !fullscreen) return;
+
+    let isOpen = false;
+
+    function openMenu() {
+      isOpen = true;
+      fullscreen.classList.add('open');
+      fullscreen.setAttribute('aria-hidden', 'false');
+      hamburger.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      hamburger.setAttribute('aria-label', 'Fermer le menu');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        const firstLink = fullscreen.querySelector('.menu-link');
+        if (firstLink) firstLink.focus();
+      }, 500);
+    }
+
+    function closeMenu() {
+      isOpen = false;
+      fullscreen.classList.remove('open');
+      fullscreen.setAttribute('aria-hidden', 'true');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-label', 'Ouvrir le menu');
+      document.body.style.overflow = '';
+      hamburger.focus();
+    }
+
+    hamburger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      isOpen ? closeMenu() : openMenu();
+    });
+
+    // Gestion des clics sur les liens du menu plein écran
+    menuLinks.forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        const href = link.getAttribute('href');
+        // Si le lien est une ancre simple (commence par #) -> on reste sur la page, smooth scroll
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          closeMenu();
+          setTimeout(function () {
+            const target = document.querySelector(href);
+            if (target) {
+              const navHeight = document.querySelector('nav').offsetHeight;
+              const top = target.getBoundingClientRect().top + window.scrollY - navHeight;
+              window.scrollTo({ top: top, behavior: 'smooth' });
+            }
+          }, 500);
+        }
+        else {
+          // Lien vers une autre page (index.html#...) : on ferme le menu puis on navigue
+          e.preventDefault();
+          closeMenu();
+          setTimeout(function () {
+            window.location.href = href;
+          }, 400);
+        }
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen) closeMenu();
+    });
+
+    fullscreen.addEventListener('click', function (e) {
+      if (e.target === fullscreen || e.target.classList.contains('menu-backdrop')) {
+        closeMenu();
+      }
+    });
+
+    // SCROLL REVEAL (simple)
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      observer.observe(el);
+    });
+
+    // Pour les ancres internes (depuis les liens du footer ou autres)
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          const navHeight = document.querySelector('nav').offsetHeight;
+          const top = target.getBoundingClientRect().top + window.scrollY - navHeight;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
